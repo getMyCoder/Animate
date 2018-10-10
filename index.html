@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="css/animate.css"/>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <style type="text/css">
+        body{margin: 0;padding: 0;overflow: hidden;}
+        *{margin: 0;padding: 0;}
+        .container{width: 100%;overflow: hidden;}
+        .main{width: 600px;height: 400px; background: #5eae32;text-align: center;line-height: 100px;float: left;position: absolute;z-index: 9;}
+        p{margin: 0;padding: 0;}
+        .select{width: 1200px;position: relative;z-index: 999;margin: 0 auto;}
+        .select ul{overflow: hidden;list-style: none;margin: 0;padding: 0;}
+        .select ul li{float: left;width: 145px;background: #ccc;margin:0px 5px 0 0; cursor: pointer;}
+        .select ul li h3{overflow: hidden;margin: 0;padding: 0;}
+        .Bp{height: 35px;background: #ccc; font-size: 12px;color: #333;line-height: 35px;cursor: pointer;font-weight: normal;padding: 0 0 0 5px;margin: 0;float: left;}
+        .select ul li h3 img{width: 8px;float: right;margin: 15px 5px 0 0;}
+        .selectB{width: 100%;display: none;}
+        .selectB p{width: 100%;border-top: 1px solid #f1f1f1;line-height: 35px;}
+        .selectB p span{padding-left: 5px;font-size: 12px;}
+        .selectB p:hover{background: #f1f1f1;}
+        .select dl{overflow: hidden;list-style: none;margin: 0;padding: 0;}
+        .select dl dd{float: left;width: 145px;background: #5eae32;margin: 0px 5px 0 0; cursor: pointer;text-align: center;font-size: 12px;line-height: 35px;color: #fff;}
+        .active{background: #5eae32 !important;color: #fff !important}
+        .Bp input{width: 120px;border:none;background: none;outline: none}
+    </style>
+</head>
+<body>
+<div class="container">
+  <div class="main animated"></div>
+  <div class="select">
+      <dl></dl><ul></ul>
+  </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".main").css({
+            "left":(document.documentElement.clientWidth-$(".main").width())/2+"px",
+            "top":(document.documentElement.clientHeight-$(".main").height())/2+"px"
+        });
+        $(".container").css({
+            "height":document.documentElement.clientHeight+"px"
+        });
+      $.ajax({
+          type:"GET",
+          url:"json.json",
+          success:function (response) {
+              for (var i=0;i<response.length;i++){
+                  $(".select ul").append("<li><h3><p class='Bp'><input type='text' value="+response[i].name+"></p><img src='jiantou.png' /></h3><div class='selectB'></div></li>");
+                  $(".select dl").append("<dd>"+response[i].name+"</dd>");
+                  for(var j=0;j<response[i].information.length;j++){
+                      $(".select ul li").eq(i).find('.selectB').append("<p val='val'><span>"+response[i].information[j]+"</span></p>")
+                  }
+              }
+              $(".select ul li").each(function (index) {
+                  var removeHtml;
+                  var that=this;
+                  $(this).find("h3").click(function () {
+                      $(that).find(".selectB").slideToggle();
+                  });
+                  $(this).find(".selectB p").each(function () {
+                      $(this).click(function () {
+                          $(this).toggleClass("active").siblings().removeClass("active");
+                          var classHtml=$(this).find("span").html();
+                          if ($(this).attr("val")=="val"){
+                              $(that).find(".Bp input").val(classHtml);
+                              $(".main").removeClass(removeHtml);
+                              $(".main").addClass(classHtml);
+                              $(this).attr("val","select").siblings().attr("val","val")
+                          }else{
+                              $(that).find(".Bp input").val(" ");
+                              $(".main").removeClass(classHtml);
+                              $(".main").removeClass(removeHtml);
+                              $(this).attr("val","val");
+                          }
+                          removeHtml=classHtml
+                      })
+                  })
+              })
+          }
+      });
+    })
+</script>
+</body>
+</html>
